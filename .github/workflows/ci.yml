@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get code
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    # ---------- BACKEND ----------
+    - name: Install backend
+      working-directory: ./backend
+      run: npm install
+
+    - name: Check backend
+      working-directory: ./backend
+      run: npm run build || echo "No build script"
+
+    # ---------- FRONTEND ----------
+    - name: Install frontend
+      working-directory: ./frontend
+      run: npm install
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    # ---------- DOCKER ----------
+    - name: Build backend Docker
+      run: docker build -t backend-test ./backend
+
+    - name: Build frontend Docker
+      run: docker build -t frontend-test ./frontend
