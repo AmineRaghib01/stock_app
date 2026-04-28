@@ -42,3 +42,6 @@ jobs:
 
     - name: Build frontend Docker
       run: docker build -t frontend-test ./frontend
+
+    - name: Validate Docker Compose
+      run: docker compose config
