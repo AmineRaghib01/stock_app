@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  NODE_ENV: "development"
+  PORT: "4000"
+  DB_USER: "postgres"
+  DB_NAME: "stockflow_db"
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  JWT_EXPIRES_IN: "7d"
+  CLIENT_ORIGIN: "http://localhost:5173"
+  UPLOAD_DIR: "uploads"
