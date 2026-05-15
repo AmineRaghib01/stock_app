@@ -13,23 +13,23 @@ import {
   Truck,
   Users,
   Warehouse,
+  Factory,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 const nav = [
   { to: '/', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
   { to: '/products', label: 'Produits', icon: Package2 },
-  { to: '/categories', label: 'Categories', icon: Tags },
+  { to: '/categories', label: 'Catégories', icon: Tags },
   { to: '/suppliers', label: 'Fournisseurs', icon: Truck },
   { to: '/stock-movements', label: 'Mouvements de stock', icon: Warehouse },
   { to: '/purchases', label: 'Achats', icon: ShoppingCart },
   { to: '/sales', label: 'Ventes', icon: LineChart },
   { to: '/reports', label: 'Rapports', icon: ClipboardList },
-  { to: '/activity', label: "Journal d'activite", icon: Activity },
+  { to: '/activity', label: "Journal d'activité", icon: Activity },
   { to: '/users', label: 'Utilisateurs', icon: Users, adminOnly: true },
   { to: '/profile', label: 'Profil', icon: Settings2 },
 ];
@@ -46,6 +46,8 @@ export function DashboardLayout() {
 
   const links = nav.filter((n) => !(n as { adminOnly?: boolean }).adminOnly || user?.role === 'ADMIN');
 
+  const roleLabel = user?.role === 'ADMIN' ? 'Administrateur' : 'Utilisateur';
+
   const NavItems = (
     <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
       {links.map((item) => (
@@ -56,8 +58,10 @@ export function DashboardLayout() {
           onClick={() => setOpen(false)}
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-              isActive ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/80'
+              'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all',
+              isActive
+                ? 'bg-[#556b2f] text-white shadow-md shadow-[#556b2f]/20'
+                : 'text-[#64705a] hover:bg-[#eef2df] hover:text-[#1f2718]'
             )
           }
         >
@@ -69,34 +73,40 @@ export function DashboardLayout() {
   );
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[280px_1fr]">
+    <div className="min-h-screen bg-[#f7f8f2] lg:grid lg:grid-cols-[280px_1fr]">
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 w-[280px] border-r bg-card/90 backdrop-blur transition-transform lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 w-[280px] border-r border-[#d8ddc8] bg-white/95 backdrop-blur transition-transform lg:static lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <div className="flex h-16 items-center gap-2 border-b px-6">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Package2 className="size-5" />
+        <div className="flex h-16 items-center gap-3 border-b border-[#e3e7d3] px-6">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#556b2f] text-white shadow-md shadow-[#556b2f]/20">
+            <Factory className="size-5" />
           </div>
           <div>
-            <Link to="/" className="font-display text-base font-semibold tracking-tight">
-              StockFlow
+            <Link to="/" className="font-display text-base font-bold tracking-tight text-[#1f2718]">
+              Sage Automotive
             </Link>
-            <p className="text-xs text-muted-foreground">Gestion des stocks</p>
+            <p className="text-xs font-medium text-[#6b7d3b]">Interiors Stock System</p>
           </div>
         </div>
+
         {NavItems}
-        <div className="border-t p-4">
-          <div className="rounded-lg bg-muted/50 p-3">
-            <p className="text-xs text-muted-foreground">Connecte en tant que</p>
-            <p className="truncate text-sm font-medium">
-              {user?.firstName} {user?.lastName}
-            </p>
-            <Badge variant="secondary" className="mt-2">
-              {user?.role}
-            </Badge>
+
+        <div className="border-t border-[#e3e7d3] p-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[#f7f8f2] px-3 py-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-[#556b2f] text-sm font-bold text-white">
+              {user?.firstName?.[0]}
+              {user?.lastName?.[0]}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-[#1f2718]">
+                {user?.firstName} {user?.lastName}
+              </p>
+              <p className="text-xs text-[#6b7d3b]">{roleLabel}</p>
+            </div>
           </div>
         </div>
       </aside>
@@ -111,23 +121,30 @@ export function DashboardLayout() {
       ) : null}
 
       <div className="flex min-h-screen flex-col lg:min-w-0">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-card/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-card/70 md:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-[#e3e7d3] bg-white/85 px-4 backdrop-blur supports-[backdrop-filter]:bg-white/70 md:px-8">
           <Button type="button" variant="outline" size="icon" className="lg:hidden" onClick={() => setOpen(true)}>
             <Menu className="size-4" />
           </Button>
+
           <div className="flex flex-1 items-center justify-between gap-4">
             <div className="hidden md:block">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Operations</p>
-              <p className="text-sm text-muted-foreground">Visibilite des stocks en temps reel</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#6b7d3b]">Sage Automotive Interiors</p>
+              <p className="text-sm text-[#64705a]">Plateforme interne de gestion de stock</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="size-4" />
-                Deconnexion
-              </Button>
-            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="border-[#d8ddc8] text-[#1f2718] hover:bg-[#eef2df]"
+            >
+              <LogOut className="size-4" />
+              Déconnexion
+            </Button>
           </div>
         </header>
+
         <main className="flex-1 px-4 py-8 md:px-8">
           <Outlet />
         </main>

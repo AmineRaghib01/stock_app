@@ -10,6 +10,6 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
-    allowedHosts: ['frontend'],
+    allowedHosts: ['frontend', 'stockflow.local', 'localhost', '127.0.0.1'],
   },
 });
